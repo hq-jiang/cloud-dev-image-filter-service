@@ -24,11 +24,22 @@ import {filterImageFromURL, deleteLocalFiles} from './util/util';
 
   async function processImage(req : express.Request, res : express.Response) {
     const imageUrl : string = req.query.image_url;
-    const localImagePath : string = await filterImageFromURL(imageUrl);
-    res.sendFile(localImagePath);
-    res.on('finish', function(){
-      deleteLocalFiles([localImagePath]);
- });
+    if (imageUrl.startsWith("https://") || imageUrl.startsWith("http://")) {
+      filterImageFromURL(imageUrl)
+      .then((localImagePath) => {
+        res.sendFile(localImagePath);
+        res.on('finish', function(){
+          deleteLocalFiles([localImagePath]);
+        })
+      })
+      .catch((error) =>{
+        res.status(404).send(`${error}`);
+      });
+    } else {
+      res.status(400).send(`Not a valid address: ${imageUrl} `);
+    }
+
+
   }
 
   // Root Endpoint
