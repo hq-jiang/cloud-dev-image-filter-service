@@ -38,7 +38,7 @@ import {filterImageFromURL, deleteLocalFiles} from './util/util';
     const localImagePath : string = await filterImageFromURL(imageUrl);
     console.log('input image url:', imageUrl);
     console.log('local image path:', localImagePath);
-    res.send(localImagePath);
+    res.sendFile(localImagePath);
   }
 
   // Root Endpoint
